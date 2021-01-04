@@ -1,0 +1,25 @@
+---
+title: "Unravelling active sensing in groups with the \textit{Ushichka} dataset}"
+
+author:
+
+  - name: "Thejasvi Beleyur"
+    affiliation: Acoustic and Functional Ecology, MPI for Ornithology, Seewiesen
+  - name: "Holger R Goerlitz"
+    affiliation: Acoustic and Functional Ecology, MPI for Ornithology, Seewiesen
+
+
+date: "Document updated: `r.Sys.Date()`" 
+
+output: 
+  pdf_document:
+    extra_dependencies: ["babel","fontenc","inputenc"]
+  latex_engine: lualatex
+
+bibliography: ushichka_references.bib
+
+---
+
+
+## Introduction
+Here we present the conceptual motivation, biology and technical equipment behind the \textit{Ushichka} dataset. The word Ushichka \textit{(OO-shi-ch-kaa)} $\foreignlanguage{russian}{Ушичка}$ in Bulgarian is the dimunitive for something with multiple ears. The name is chosen to highlight the fact that this is a  multichannel, multi-sensor dataset which aims to unobtrusively observe (listening with technological eyes and ears) bats echolocating in the wild in groups. 
