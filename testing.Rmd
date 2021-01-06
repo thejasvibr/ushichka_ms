@@ -11,9 +11,10 @@ author:
 
 date: "Document updated: `r.Sys.Date()`" 
 
-output: 
-  pdf_document:
-    extra_dependencies: ["babel","fontenc","inputenc"]
+output:
+  bookdown::word_document2:
+  fig_caption: yes
+  
   latex_engine: lualatex
 
 bibliography: ushichka_references.bib
@@ -22,4 +23,4 @@ bibliography: ushichka_references.bib
 
 
 ## Introduction
-Here we present the conceptual motivation, biology and technical equipment behind the \textit{Ushichka} dataset. The word Ushichka \textit{(OO-shi-ch-kaa)} $\foreignlanguage{russian}{Ушичка}$ in Bulgarian is the dimunitive for something with multiple ears. The name is chosen to highlight the fact that this is a  multichannel, multi-sensor dataset which aims to unobtrusively observe (listening with technological eyes and ears) bats echolocating in the wild in groups. 
+Here we present the conceptual motivation, biology and technical equipment behind the \textit{Ushichka} dataset. The word Ushichka \textit{(OO-shi-ch-kaa)} Ушичка in Bulgarian is the dimunitive for something with multiple ears. The name is chosen to highlight the fact that this is a  multichannel, multi-sensor dataset which aims to unobtrusively observe (listening with technological eyes and ears) bats echolocating in the wild in groups. 

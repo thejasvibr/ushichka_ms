@@ -1,7 +1,7 @@
 ---
-title: "Unravelling active sensing in groups with the *Ushichka* dataset: Supplementary Information"
+title: "Supplementary Information: The *Ushichka* dataset: a multi-channel, multi-sensor dataset to unravel active sensing in groups"
 
-author: "Thejasvi Beleyur, Holger R Goerlitz"
+author: "Thejasvi Beleyur, Holger R. Goerlitz"
 
 date: "Document updated: `r Sys.Date()`" 
 
@@ -10,6 +10,7 @@ output:
   fig_caption: yes
   pdf_document:
     extra_dependencies: ["babel","float"]
+
   latex_engine: 
     lualatex
 
@@ -17,59 +18,42 @@ bibliography: ushichka_references.bib
 ---
 ```{r echo=FALSE}
 library(knitr)
+  
 ```
 
 ## Audio-video synchronisation and recording 
-The audio-video recording was run by a callback function that repeatedly collected input audio and output signals to and from the soundcards in the form of data buffers (1024-2048 samples). The input buffer consisted of $M_{channels} X N_{samples}$ array, while the output buffer consisted of a $3 X N_{samples}$ array. When a recording was triggered, all input buffer data were concatenated and saved into an audio file. When not triggered, the input buffer data was only used to measure audio level. The output buffer consisted of three channels. The first ouptut channel was a constantly output 25Hz square wave
+The audio-video recording was run by a callback function that repeatedly collected input audio and output signals to and from the soundcards in the form of data buffers (1024-2048 samples). The input buffer consisted of an $M_{channels} \:X \:N_{samples}$ array, while the output buffer consisted of a $3 \:X \:N_{samples}$ array. When a recording was triggered, all input buffer data were concatenated and saved into an audio file. When not triggered, the input buffer data was only used to measure audio level. The output buffer consisted of three channels. The first ouptut channel was a constantly output 25Hz square wave
 sent to the thermal camera control box. This 25Hz square wave was the common signal which synchronised the frame capture of all three thermal cameras. The signals in the second and third channels were dependent on whether 
-a recording had been triggered or not.  When a recording was not triggered, only zeros were sent to the second and third channel's data buffer. When a recording was triggered, the second channel's data consisted of a 20 kHz sine wave. The high-frequency sine wave triggered the simultaneous video recording in all three thermal cameras, and thus ensured frame-level synchronisation in the video files. On triggering, the third channel's data buffer was an attenuated version of the square wave signal being sent in channel 1. This attenuated square wave served as an inter-soundcard synchronisation signal. Despite the use of the inbuilt Word clock signal from the master sound card, the audio data received across devices was observed to be jittered by a varying number of samples in each recording. The audio data from within a single sound card was however verified to be sampled synchronously. This thus required the use of a inter-sound card synchronisation channel for each sound card added to the
-system \footnote{It is very likely that the jitter may have been introduced by impedance mismatch caused by the use of 50 Ohm BNC cables. Recent experiments with the same Fireface devices using 75 Ohm cables and an impedance matched signal splitter lead to constant synchronisation between multiple Fireface soundcards}. 
-frame capture.
+a recording had been triggered or not.  When a recording was not triggered, only zeros were sent to the second and third channel's data buffer. When a recording was triggered, the second channel's data consisted of a 20 kHz sine wave. The high-frequency sine wave triggered the simultaneous video recording in all three thermal cameras, and thus ensured frame-level synchronisation in the video files. On triggering, the third channel's data buffer was an attenuated version of the square wave signal being sent in channel 1. This attenuated square wave served as an inter-soundcard synchronisation signal. Despite the use of the inbuilt Word clock signal from the master sound card, the audio data received across devices was observed to be jittered by a varying number of samples in each recording^[The jitter may have been introduced by impedance mismatch and internal reflections caused by the use of 50 Ohm BNC cables and T-splitters. Recent experiments with the same Fireface devices using 75 Ohm cables and an impedance matched signal splitter lead to constant synchronisation between multiple Fireface soundcards]. The audio data from within a single sound card was however verified to be sampled synchronously. 
 
-The automated audio-video recording triggering was controlled by the ```fieldrecorder_trigger``` module.
+The automated audio-video recording was controlled by the ```fieldrecorder_trigger``` module.
 
-## Microphone calibration
+## Automatically microphone position estimation {#automicpos}
 
-### Array position self-calibration
-To automatically estimate the positions of the microphones placed all around the cave speaker playbacks were performed after each recording session as described in [@sfs_cotdoa]. Briefly, a speaker (Peerless XT25SC90-04) with a reusable heating pad attached to it was moved through the recording volume. The playback consisted of frequency modulated sweeps between 16-96kHz of various types (linear, hyperbolic, V-shaped). The sweeps were played back at a constant interval of one second (Figure \@ref(fig:sfsplayback)). The signal was generated from the primary sound card in use (Fireface UC/802), and amplified through a car audio amplifier (Basetech AP-2100). Playbacks were only done past 6:00 am to prevent disturbing the resident bat population. Moreover, at this time of the day, there are almost no bats flying in the recording volume. 
+The Structure-From-Sound approach [@zhayida2016automatic] to automatically estimate microphone positions relies on a common sound being recorded simultaneously on multiple channels. The time-differences-of-arrival between channel pairs are used to estimate the positions of the microphones. @zhayida2016automatic use a continuous sound source such as a song or speech signal, while we chose to use discrete signal playbacks. 
 
-The speaker-playback method has yielded successful automatic microphone position estimations as documented in more detail in [@sfs_cotdoa]. [@sfs_cotdoa] shows a successfully estimated example for the microphone positions one one night. The microphone positions for the remaining nights still remain to be estimated. The advantage of having a constant time interval between consecutive playbacks is that the number of parameters estimated reduces, and thus eases the self-calibration estimation. 
+To automatically estimate the positions of the microphones placed all around the cave speaker playbacks were performed after each recording session as described in @sfs_cotdoa. Briefly, a speaker (Peerless XT25SC90-04) with an attached reusable heating pad was moved through the recording volume (Figure \@ref(fig:sfsplayback)). The playback signals changed over the course of the field season. Playbacks from 19th June to 14th July 2018 used an upward swept hyperbolic sweep between 16-96 kHz, 8ms in duration played with a constant interval of one second. Playbacks from 21st June 2018 onwards used 'multi-chirp' signals. Multi-chirp playbacks consisted of a packet of 9 sweeps made by a combination of three time-frequency structures (linear, hyperbolic, V-shaped) and three durations (6, 12, 24 ms). Each sweep occured at the end of a 200ms segment, and thus one packet of 9 sweeps was 1.8s long. Multiple packets were played with a 1.6s inter-packet silence between them. Playback signals were generated from the sound card in use (Fireface UC or Fireface 802), and amplified through a car audio amplifier (Basetech AP-2100). Playbacks were only conducted past 6:00 am to prevent disturbing the resident bat population (at this time of day, there are almost no bats flying in the recording volume). See \@ref(recnights) for further details.
 
-Additional audible speaker playbacks were also performed from a small portable speaker. However, this data does not have a constant offset, and may thus be handled by the broader set of parameter estimations described in [@zhayida2016automatic].
+@sfs_cotdoa showed succesful position estimation using discrete playbacks with ground-truthed microphone positions from one night in the Ushichka dataset. The microphone position estimations reported by @sfs_cotdoa are within the range of $\pm$ 4 cm of ground-truthed positions. This error-range may perhaps be sufficient for acoustic tracking given that the bat-microphone distances are much larger (in the order of 0.5-5m).
 
+Additional audible speaker playbacks were also performed from a small portable speaker. However, this data is yet to be analysed. 
 
-```{r sfsplayback, echo=FALSE, fig.cap="Data and methods behind the microphone self-calibration method used in Batstone et al. 2019. A)Spectrogram of a few of the constant interval sweeps played back from a speaker moved around the recording volume. B) An image taken from the synchronised video recording captured during speaker playback. The white circle highlights the position of the speaker.The speaker was attached to a rod was moved in such a manner that playbacks were recorded from all over the recording volume. The speaker's position was made visible on the thermal video by a warming pad attached behind it, and thus also allows 3D video tracking of the speaker to be done if necessary."}
-multichsfs = 'figures/sfs_playback.png'
+```{r sfsplayback, echo=FALSE, fig.cap="An image taken from the synchronised video recording captured during playbacks conducted for automatic mic position estimation. The red circle highlights the position of the speaker.The speaker was attached to the end of a rod. The rod was moved in such a manner that playbacks were recorded from all over the recording volume. The speaker was made visible on the thermal video by a warming pad attached behind it, and thus also allows 3D video tracking of its position."}
+multichsfs = 'figures/speaker_w_heatpad.png'
 include_graphics(multichsfs)
 ```
 
+## Microphone frequency response and directionality calibration
+Inital mic frequency response and directionality measurements were done on 11th January 2019 for a subset of 15 microphones (4 SANKEN CO-100 and 11 SMP Knowles 0410's). The microphone was placed at a distance of 1.11 m from the speaker. Both microphone and speaker were aligned and placed on tripod stands away from the ground to avoid ground-reflections. The playback signal was a combination of pure tones (10-95 kHz, in 1 kHz steps, Tukey-windowed) and  linear sweeps (10 ms, 15-95 kHz, Tukey-windowed). The linear sweep was repeated five times. The same playback was recorded at a variety of azimuth and elevation angles. Only one side (left/right or up/down) was recorded as symmetry was assumed across the azimuth and elevation. 
 
-### Manual inter-mic measurements
-On all nights, manual measurements of a subset of all possible inter-mic distances were also performed with a laser range finder (1mm accuracy, Bosch GLM 50C). The issue with manual measurements is that they can be time-consuming, especially when the number of microphones is large, and moreover they can be error-prone. Especially when distances between microphones were more than around 4-5 metres, shaking hands caused inaccuracies in pointing. Another issue with manual measurements is that it requires a direct line-of-sight between a pair of microphones. Automatic position self-calibration is likely to be less affected by the issues that plague manual measurements, but requires more technical equipment and know-how. The algorithms in [@sfs_cotdoa] use randomly chosen estimates to seed the position estimation process. The manual inter-mic measurements can be fed into the estimation algorithms to yield higher accuracy position estimates. 
+Each microphone was attached to a L-shaped holder that was centred around a rotation point. The tip of the SANKEN CO-100's were set to be over the rotation point. The Knowles SPU 0410 microphones were attached to a cardboard sheet to mimic the effect of the cave wall. This allowed replication of the frequency and directionality response the microphones would have had in the cave. The cardboard sheet was aligned to coincide with the rotation point. 
 
-### Microphone frequency response and directionality calibration
-
-
-### Calibration runs and details
-Each microphone was calibrated by attaching it to a cardboard sheet to mimic the cave wall. This allowed quantification of the frequency +and directionality response as the microphones would actually be recording in the cave. 
-
-The playback signal was a combination of pure tones (10-95 kHz, in 1 kHz steps) and a 10 ms long  Tukey-windowed linear sweeps from 15-95 kHz. The linear sweep was repeated five times. \textit{More details here}. The same playback was recorded at a variety of azimuth and elevation angles. Only one side (left/right or up/down) was recorded as symmetry was assumed across the azimuth and elevation. The calibration exercise remains to be completed for all microphones in the recording system (as of 2020-10-27).
-
-#### Experiment dates:
-
-1. 2018-05-16 : Most probably done in Seewiesen. All SANKEN mics calibration run with on-axis recordings. GRAS microphone recording also made for reference. 
-
-1. 2018-06-04 and 2018-06-05: Calibration experiment attempt (incomplete). Calibration experiments aborted because of variation in the microphone stand and inconsistency
-in rotation. If TB remembers correctly, the self-made L-stand could not be fixed properly and did not return to the same position after a series of rotations. This was the reason only a few mics were recorded, and then aborted because the flight room had to be cleared up for either Toni or Laura the next day!
-
-1. 2018-07-16: Complete run of all microphones present in microphone array. Microphone-to-speaker distance was 1.12m. Experiment was done in the larger flight room if TB remembers correctly. No speaker compensation was applied. 
-Microphones calibrated were SANKEN9, SANKEN10, SANKEN11, SANKEN12, SMP1, SMP2, SMP3, SMP3C, SMP4, SMP5, SMP6, SMP7C, SMP8. 
+For reference, a  calibration microphone (GRAS 40BF, GRAS Sound and Vibration, Denmark) attached to a pre-amplifier (GRAS Type 26AC) and amplifier (GRAS Type 12HF) was placed in the same location as the microphones under calibration and the calibration playbacks were recorded. 
 
 ## Camera calibration
 
-The three thermal cameras were calibrated using the 'wand' procedure described in \cite{Theriault2014}. Two halogen lamps (G4, 20W, 12V)
-were attached to a wooden stick and connected to a 12V DC car battery. This formed the 'thermal wand'. The small size of the halogen 
-lamps meant that the lamps appeared as points on the video and were easy to localise in the thermal camera data. The wand was moved systematically within  the recording volume to ensure all parts where bats flew were covered. 
+The three thermal cameras were calibrated for their extrinsic (position and orientation) and intrinsic (focal length and distortion) parameters using the 'wand' procedure and 'easyWand' package described in @Theriault2014. Two halogen lamps (G4, 20W, 12V)
+were attached to the ends of a wooden stick (lamp-to-lamp distance of 59cm) and connected in parallel to a 12V DC car battery, forming the 'thermal wand'. The small size of the halogen lamps meant that the lamps appeared as points on the video and were easy to localise in the video data. The wand was moved systematically within  the recording volume to cover all parts where bats flew. 
 
 
 ```{r wandimg, echo=FALSE, fig.cap="Image showing the thermal wand used as the common calibration object. The two incandescent lights forming either end of the wand are encircled in red."}
@@ -77,24 +61,34 @@ wand_img = 'figures/wand_marked_.png'
 include_graphics(wand_img)
 ```
 
-Preliminary Wand scores from calibrations done using the easyWand package\cite{Theriault2014} gave a 'wand score' of $\leq 1$, indicating a relatively good calibration. In addition, gravity calibration was also performed by throwing a reusable click-activated heating pad. These reusable heating pads are also ideal for use in long-distance calibrations where the wand needs to have a slightly larger size so it is visible in the video.  
+Wand points were digitised using the DLTdv package [@dltdv] and preliminary Wand scores from calibrations done using the easyWand package\cite{Theriault2014} gave a 'wand score' of $< 1$, indicating a relatively good calibration. The Wand score indicates the variation in estimated distance between the two wand points across the calibrated volume, where a low score indicates a good calibration. In addition, gravity calibration was also performed by throwing a reusable click-activated heating pad.  
 
-### Additional video recordings 
+## Additional video recordings of relevance in *Ushichka*
+Aside from bat flight and wand video recordings, a series of other video recordings were also performed. These video recordings serve to provide at least two functionalities. The first function is to align audio and video tracking data into a common co-ordinate system. The second function is that the video recordings provide 'background points' (sensu @Theriault2014) to assist camera parameter estimations. 
 
-1. For every recording night, the positions of microphones were 'pointed' at with the thermal wand and these recordings can be used as a reference to align the acoustic and video tracking data. The microphone positions can also be used as background points for the Wand calibrations. 
-1. The speaker playbacks used in [Array position self-calibration] were recorded simultaneously with audio and video (See Figure \@ref(fig:sfsplayback)). The speaker positions can also be used as background points for Wand calibrations. 
+1. Mic positions : For every recording night, the positions of microphones were 'pointed' at with the thermal wand. These recordings are particularly useful to align the acoustic and video tracking data into a common coordinate system. 
 
-Each camera (K1,K2,K3) was placed in a relatively constant configuration, with K1 typically being placed close to the entrance, K2 in the middle, and K3 towards the side tunnel leading into the Rue de Paris. 
+1. Speaker playback recordings: The speaker playbacks for mic position estimation described in \@ref(automicpos) were recorded simultaneously with audio and video (See Figure \@ref(fig:sfsplayback)). While these recordings could be used to align audio and video, they will be less accurate as the heating pad is placed at a slight distance from the speaker. The speaker playback recordings are thus better used to add 'background points' to improve camera parameter estimations. 
 
-### Digitisation and 3D tracking
-The DLTdv5 \cite{Theriault2014} package was used to digitise wand points and generate the 3D tracks. 
+## Recording nights in the recording volume  {#recnights} 
 
-### Camera intrinsic and extrinsic parameter estimation
-The easyWand package \cite{Theriault2014} provided the intrinsic and extrinsic parameters required to track bats in 3D. 
+Table: (\#tab:nightandplayback) Table showing the date of recording session and type of playback. The multi-chirp sweeps consisted of linear, hyperbolic and V-shaped sweeps each with short,medium and long durations of 6,12,24ms length respectively. Sessions with manually triggered recordings were triggered by an experimenter listening for bat calls on a bat detector while watching the thermal camera video feed. Automaticallyally triggered recordings were set to start when the RMS of an incoming audio buffer crossed a threshold value. 
 
-## Acknowledgements
-TB would like to thank Pranav Khandelwal for extensive help setting up the thermal camera calibration workflow and Hedrick Tyson 
-for providing helpful feedback and intrinsic parameter data for the cameras.
+|Session Date|Playback signal type|Duration  (ms)|Recordings triggered|
+|------------|--------------------|--------------|--------------------|
+|2018-06-19  |Hyperbolic          | 8            |Manually            | 
+|2018-06-21  |Hyperbolic          | 8            |Manually            |
+|2018-06-22  |Hyperbolic          | 8            |Automatically       |
+|2018-07-14  |Hyperbolic          | 8            |Automatically       |
+|2018-07-21  |Multi-chirp         | 6,12,24      |Automatically       |
+|2018-07-25  |Multi-chirp         | 6,12,24      |Automatically       |
+|2018-07-28  |Multi-chirp         | 6,12,24      |Automatically       |
+|2018-08-14  |Multi-chirp         | 6,12,24      |Automatically       |
+|2018-07-28  |Multi-chirp         | 6,12,24      |Automatically       |
+|2018-08-02  |Multi-chirp         | 6,12,24      |Automatically       |
+|2018-08-14  |Multi-chirp         | 6,12,24      |Automatically       |
+|2018-08-17  |Multi-chirp         | 6,12,24      |Automatically       |
+|2018-08-18  |Multi-chirp         | 6,12,24      |Automatically       |
+|2018-08-19  |Multi-chirp         | 6,12,24      |Automatically       |
 
-
-## References
+## Supplementary Information References
