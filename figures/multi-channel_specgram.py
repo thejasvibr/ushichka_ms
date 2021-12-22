@@ -82,10 +82,9 @@ def put_yticks(silent=False):
     
     if not silent:
         plt.yticks([0,48000,96000],[0,'',96], fontsize=6)
-        plt.gca().yticks.set_pad(1)
     else:
         plt.yticks([0,48000,96000],['','',''], fontsize=6)
-    plt.gca().tick_params(axis='y', pad=1)
+    plt.gca().tick_params(axis='y', pad=0.25)
         
 def put_xticks():
     plt.xticks([0,0.1,0.2],[0,100,200], fontsize=6)
